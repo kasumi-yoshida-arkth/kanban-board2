@@ -12,4 +12,24 @@ class TaskController extends Controller
 
         return view('tasks.index', compact('tasks'));
     }
+
+    /**
+     * タスクカードを追加
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'title' => ['required', 'string', 'max:56'],
+            'description' => ['required', 'string'],
+            'status_id' => ['required', 'exists:statuses,id']
+        ]);
+
+        return $request->user()
+            ->tasks()
+            ->create($request->only('title', 'description', 'status_id'));
+    }
 }

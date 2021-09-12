@@ -6,3 +6,6 @@
   </main>
 </div>
 @endsection
+@section('script')
+  
+@endsection

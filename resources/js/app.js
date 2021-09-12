@@ -1,9 +1,10 @@
 require("./bootstrap");
 
 import Vue from 'vue';
-// window.Vue = require("vue");
+import draggable from 'vuedraggable';
 
 Vue.component("kanban-board", require("./components/KanbanBoard.vue").default);
+Vue.component('draggable', draggable);
 
 const app = new Vue({
     el: "#app"
