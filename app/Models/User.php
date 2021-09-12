@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Task;
+use App\Models\Status;
 
 class User extends Authenticatable
 {
@@ -41,4 +43,48 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function statuses()
+    {
+        return $this->hasMany(Status::class)->orderBy('order');
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($user) {
+
+            $user->statuses()->createMany([
+                [
+                    'title' => '未処理',
+                    'slug' => 'backlog',
+                    'order' => 1
+                ],
+                [
+                    'title' => '着手',
+                    'slug' => 'up_next',
+                    'order' => 2
+                ],
+                [
+                    'title' => '進行中',
+                    'slug' => 'progress',
+                    'order' => 3
+                ],
+                [
+                    'title' => '完了',
+                    'slug' => 'done',
+                    'order' => 4
+                ],
+                [
+                    'title' => '保留',
+                    'slug' => 'on_hold',
+                    'order' => 5
+                ]
+            ]);
+        });
+    }
 }

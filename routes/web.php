@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\StatusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,11 +14,30 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index');
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::user()) {
+        return redirect()->route('home');
+    }
+
+    return redirect('/login');
 });
 Auth::routes();
 
-Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', function () {
+    return redirect()->route('tasks.index');
+})->name('home');
 
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index');
+    Route::post('tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::get('tasks/sync', [TaskController::class, 'sync'])->name('tasks.sync');
+    Route::delete('tasks/{tasks}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+});
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::post('statuses', [StatusController::class, 'store'])->name('statuses.store');
+    Route::put('statuses/sync', [StatusController::class, 'sync'])->name('statuses.sync');
+    Route::delete('statuses/{status}', [StatusController::class, 'destroy'])->name('statuses.destroy');
+});
