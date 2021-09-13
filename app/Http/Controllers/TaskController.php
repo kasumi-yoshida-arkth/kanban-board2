@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Task;
 
 class TaskController extends Controller
 {
@@ -31,5 +32,46 @@ class TaskController extends Controller
         return $request->user()
             ->tasks()
             ->create($request->only('title', 'description', 'status_id'));
+    }
+
+    /**
+     * タスクの並び順を更新
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function sync(Request $request)
+    {
+        $this->validate(request(), [
+            'columns' => ['required', 'array']
+        ]);
+
+        foreach ($request->columns as $status) {
+            foreach ($status['tasks'] as $i => $task) {
+                $order = $i + 1;
+                if ($task['status_id'] !== $status['id'] || $task['order'] !== $order) {
+                    request()->user()->tasks()
+                        ->find($task['id'])
+                        ->update(['status_id' => $status['id'], 'order' => $order]);
+                }
+            }
+        }
+
+        return $request->user()->statuses()->with('tasks')->get();
+    }
+
+    /**
+     * タスクを削除
+     *
+     * @param int $taskId
+     * @return int
+     */
+    public function destroy(int $taskId)
+    {
+        $del_task = Task::find($taskId);
+        $del_task->delete();
+
+        return (200);
     }
 }

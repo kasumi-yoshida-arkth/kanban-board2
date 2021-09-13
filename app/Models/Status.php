@@ -9,17 +9,34 @@ use App\Models\User;
 
 class Status extends Model
 {
+    
     protected $fillable = ['title', 'slug', 'order'];
 
-    public $timestamps = false;
-
-    public function tasks()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasks ()
     {
         return $this->hasMany(Task::class)->orderBy('order');
     }
 
-    public function user()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user ()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * ステータス削除時に、関連タスクを削除する
+     */
+    public static function boot ()
+    {
+        parent::boot ();
+
+        static::deleting(function ($status) {
+            $status->tasks()->delete();
+        });
     }
 }
