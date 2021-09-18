@@ -9,6 +9,8 @@
                 >
                     Add Status ＋
                 </button>
+                <div>{{$store.state.output}}</div>
+                <button @click="change()">変更</button>
 
                 <AddStatusModal
                     v-if="showModal"
@@ -135,7 +137,7 @@
 import AddTaskForm from "./AddTaskForm";
 import AddStatusModal from "./AddStatusModal";
 import draggable from "vuedraggable";
-import { CreditCardIcon, Trash2Icon } from "vue-feather-icons";
+import { CreditCardIcon, EditIcon, Trash2Icon } from "vue-feather-icons";
 
 export default {
     components: {
@@ -171,6 +173,9 @@ export default {
                 group: "status-list",
                 dragClass: "status-drag"
             };
+        },
+        output () {
+            return this.$state.store.input
         }
     },
     mounted () {
@@ -258,6 +263,9 @@ export default {
                         console.log(err);
                     });
             }
+        },
+        change () {
+            store.commit('setOutput', 'Success!')
         },
 
     }
