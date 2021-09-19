@@ -8,8 +8,8 @@ export default new Vuex.Store({
     output: 'Hello'
   },
   mutations: {
-    setOutput (state, output) {
-      state.output = output
+    setOutput (state, input) {
+      state.output = input
     }
   }
 })

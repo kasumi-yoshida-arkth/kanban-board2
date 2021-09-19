@@ -10,7 +10,7 @@
                     Add Status ＋
                 </button>
                 <div>{{$store.state.output}}</div>
-                <button @click="change()">変更</button>
+                <button class="change-btn" @click="change()">変更</button>
 
                 <AddStatusModal
                     v-if="showModal"
@@ -130,6 +130,10 @@
             </draggable>
         </div>
         <!-- ./Columns -->
+
+        <router-link to="/vue_router/">index</router-link>
+        <router-link to="/vue_router/show">show</router-link>
+        <router-view></router-view>
     </div>
 </template>
 
@@ -265,7 +269,7 @@ export default {
             }
         },
         change () {
-            store.commit('setOutput', 'Success!')
+            this.$store.commit('setOutput', 'Success!')
         },
 
     }
@@ -284,5 +288,11 @@ export default {
     display: -ms-flex;
     display: -o-flex;
     display: flex;
+}
+
+.change-btn {
+    background-color: cornflowerblue;
+    padding: 5px;
+    border-radius: 5px;
 }
 </style>

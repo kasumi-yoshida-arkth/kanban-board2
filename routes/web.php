@@ -42,3 +42,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('statuses/{status}', [StatusController::class, 'update'])->name('statuses.update');
     Route::delete('statuses/{status}', [StatusController::class, 'destroy'])->name('statuses.destroy');
 });
+
+Route::get('/vue_route/{any}', function() {
+    return view('tasks.list');
+})->where('any', '.*');
