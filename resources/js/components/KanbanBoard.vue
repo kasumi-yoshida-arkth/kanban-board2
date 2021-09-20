@@ -85,11 +85,22 @@
                                             :key="task.id"
                                             class="mb-3 p-4 flex flex-col bg-white rounded-md shadow transform hover:shadow-md cursor-pointer"
                                         >
+                                            <EditTaskForm
+                                                v-if="EeditTaskForStatus === status.id"
+                                                :status-id="status.id"
+                                                v-on:task-edited="handleTaskEdited"
+                                                v-on:task-canceled="closeAddTaskForm"
+                                            />
                                             <div class="flex justify-between">
                                                 <span class="block mb-2 text-xl text-gray-900">
                                                     {{ task.title }}
                                                 </span>
                                                 <div>
+                                                    <button aria-label="Edit task"
+                                                            class="p-1 focus:outline-none focus:shadow-outline text-red-500 hover:text-red-600"
+                                                            @click="onEdit(task.id, status.id)">
+                                                        <EditIcon/>
+                                                    </button>
                                                     <button aria-label="Delete task"
                                                             class="p-1 focus:outline-none focus:shadow-outline text-red-500 hover:text-red-600"
                                                             @click="onDelete(task.id, status.id)"
@@ -140,6 +151,7 @@
 <script>
 import AddTaskForm from "./AddTaskForm";
 import AddStatusModal from "./AddStatusModal";
+import EditTaskForm from "./EditTaskForm";
 import draggable from "vuedraggable";
 import { CreditCardIcon, EditIcon, Trash2Icon } from "vue-feather-icons";
 
@@ -151,6 +163,7 @@ export default {
         Trash2Icon,
         AddTaskForm,
         AddStatusModal,
+        EditTaskForm,
     },
     props: {
         initialData: Array
@@ -159,6 +172,7 @@ export default {
         return {
             statuses: [],
             newTaskForStatus: 0,
+            editTaskForStatus: 0,
             showModal: false,
             maxOrderNo: 0
         };
@@ -198,6 +212,28 @@ export default {
         },
         closeStatusModal() {
             this.showModal = false;
+        },
+        onEdit(taskId, statusId) {
+            this.editTaskForStatus = statusId;
+            // const statusIndex = this.statuses.findIndex(
+            //     status => status.id === statusId
+            // );
+            // const taskIndex = this.statuses[statusIndex].tasks.findIndex(
+            //     id => taskId
+            // );
+            // axios
+            //     .get("/tasks/" + taskId)
+            //     .then(res => {
+            //         alert(taskId + "参照完了");
+            //         console.log(res);
+            //     })
+            //     .catch(error=> {
+            //         alert(taskId + "参照失敗");
+            //         console.log(error);
+            //     });
+        },
+        closeEditTaskForm() {
+            this.editTaskForStatus = 0;
         },
         onDelete (taskId, statusId) {
             const statusIndex = this.statuses.findIndex(
